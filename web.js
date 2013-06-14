@@ -1,49 +1,12 @@
-var http = require('http');
-var util = require('util');
-var querystring = require('querystring');
-var mongo = require('mongodb');
-var url = require('url');
+var express = require("express");
+var app = express();
+app.use(express.logger());
 
-// var host = "127.0.0.1";
-// var port = 27017;
+app.get('/', function(request, response) {
+  response.send('Hello World!');
+});
 
-// var db= new mongo.Db('test', new mongo.Server(host,port,{}));
-
-// console.log(process.env.MONGOHQ_URL);
-// var connectionUri = url.parse(process.env.MONGOHQ_URL);
-// var dbName = connectionUri.pathname.replace(/^\//, '');
-// console.log(connectionUri);
-
-var host = process.env.MONGOHQ_URL || "mongodb://@127.0.0.1:27017";
-//export MONGOHQ_URL=mongodb://user:pass@server.mongohq.com/db_name
-mongo.Db.connect(process.env.MONGOHQ_URL, function(error, client) {
-// db.open( function(error, client) {
-	if (error) throw error;
-	var collection = new mongo.Collection(client, 'test_collection');
-	var app = http.createServer( function (request, response) {
-		if (request.method==="GET"&&request.url==="/messages/list.json") {
-			collection.find().toArray(function(error,results) {
-				response.writeHead(200,{'Content-Type':'text/plain'});
-				console.dir(results);
-				response.end(JSON.stringify(results));
-			});
-		};
-		if (request.method==="POST"&&request.url==="/messages/create.json") {
-//            curl -d "name=BOB&message=test" http://127.0.0.1:5000/messages/create.json
-
-                request.on('data', function(data) {
-				collection.insert(querystring.parse(data.toString('utf-8')), {safe:true}, function(error, obj) {
-					if (error) throw error;
-					response.end(JSON.stringify(obj));
-				})				
-			})
-
-		};
-	});
-
-//    http://127.0.0.1:5000/messages/list.json
-	// console.log(util.inspect(app))
-	var port = process.env.PORT || 5000;
-	app.listen(port);
-	// app.listen(1337, '127.0.0.1');
-})
+var port = process.env.PORT || 5000;
+app.listen(port, function() {
+  console.log("Listening on " + port);
+});
