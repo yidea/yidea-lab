@@ -38,5 +38,8 @@ app.get('/bb', function (req, res) { //bb test
 //    res.send({id:req.params.id, name: "The Name", description: "description"});
 //});
 
-app.listen(8090);
-console.log('Listening on http://localhost:8090/...');
+var port = process.env.PORT || 8090;
+app.listen(port, function() {
+  console.log("Listening on " + port);
+});
+console.log("Listening on port " + port);
