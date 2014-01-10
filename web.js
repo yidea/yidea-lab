@@ -13,7 +13,7 @@ app.configure(function () {
 });
 
 //router
-app.get('/', function (req, res) {
+app.get('/jsonUtil', function (req, res) {
   res.sendfile(__dirname + '/public/jsonUtil.html');
 });
 
