@@ -12,12 +12,12 @@ app.configure(function () {
 });
 
 //router
-app.get('/html2jsarray', function (req, res) {
-  res.sendfile(__dirname + '/public/html2jsarray.html');
+app.get('/', function (req, res) {
+  res.sendfile(__dirname + '/public/jsonUtil.html');
 });
 
-app.get('/jsonUtil', function (req, res) {
-  res.sendfile(__dirname + '/public/jsonUtil.html');
+app.get('/html2jsarray', function (req, res) {
+  res.sendfile(__dirname + '/public/html2jsarray.html');
 });
 
 app.get('/dev', function (req, res) {
