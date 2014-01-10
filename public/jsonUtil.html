@@ -109,7 +109,8 @@
       $txtJsonEncode = $("#json_encode"),
       $txtJsonBuildUrl = $("#json_build_url");
 
-  //events
+  // events
+  // one-click-build
   $("#btn_one_click").on("click", function () {
     var jsonRaw = $txtJsonRaw.val(),
         jsonMinified,
@@ -133,6 +134,7 @@
 
     $("#url_one_click").prop("href", urlPresoCategory).text("Generated Preso URL");
   });
+
 
   $("#btn_minify").on("click", function () {
     var jsonRaw = $txtJsonRaw.val(),
