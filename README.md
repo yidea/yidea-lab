@@ -22,6 +22,10 @@ Node.js server
 git push heroku master
 //Ensure 1 dyno running web process
 heroku ps:scale web=1
+//Check dyno status
+heroku ps
+//visit app via browser
+heroko open
 
 ```
 
