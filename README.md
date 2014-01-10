@@ -17,17 +17,21 @@ Node.js dependency libraries (express)
 Node.js server
 
 * Deploy Heroku
+git@heroku.com:yidea-lab.git
 
 ```
+git remote add heroku git@heroku.com:yidea-lab.git
 git push heroku master
+
 //Ensure 1 dyno running web process
 heroku ps:scale web=1
-//Check dyno status
+
+//Check dyno status/logs
 heroku ps
-//visit app via browser
-heroku open
 heroku logs
 
+//visit app via browser
+heroku open
 ```
 
 ## Links
