@@ -5,8 +5,9 @@ var express = require('express'),
 var app = express();
 
 app.configure(function () {
-  app.set('port', process.env.PORT || 3000);
-  app.use(express.logger('dev'));
+//  app.set('port', process.env.PORT || 3000);
+//  app.use(express.logger('dev'));
+
   /* 'default', 'short', 'tiny', 'dev' */
   app.use(express.static(__dirname + '/public'));
 });
@@ -38,7 +39,7 @@ app.get('/bb', function (req, res) { //bb test
 //    res.send({id:req.params.id, name: "The Name", description: "description"});
 //});
 
-var port = process.env.PORT || 8090;
+var port = process.env.PORT || 5000;
 app.listen(port, function() {
   console.log("Listening on " + port);
 });

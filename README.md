@@ -25,7 +25,8 @@ heroku ps:scale web=1
 //Check dyno status
 heroku ps
 //visit app via browser
-heroko open
+heroku open
+heroku logs
 
 ```
 
