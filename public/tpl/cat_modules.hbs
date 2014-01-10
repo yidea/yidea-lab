@@ -1,0 +1,81 @@
+<script id="hbs_wml_cat_pov" type="text/x-handlebars-template">
+    {{! pov }}
+    <div class="wml-cat-inner clearfix">
+        {{{items.html}}}
+    </div>
+</script>
+
+
+<script id="hbs_wml_cat_grid" type="text/x-handlebars-template">
+    {{! grid }}
+    <div class="wml-cat-head">
+        <h2 class="wml-cat-title">{{title}}</h2>
+    </div>
+    <div class="wml-cat-inner clearfix">
+        <div class="vpt">
+            {{#ifequal data_structure 'items'}}
+                {{#every this.items num='8' ds='items'}}
+                    <a href="{{url}}" title="{{title}}">
+                        <img src="{{getAttrOfFristArray images 'url'}}" alt="{{title}}" width="100" height="100"/>
+                        <div class="item-name">{{title}}</div>
+                    </a>
+                    <div class="item-review"><div class="item-review-inner" style="width:{{getItemRating customer_rating}}"></div></div>
+                    <span class="item-reviewnum">({{#if properties.num_reviews}}{{toFixedNum properties.num_reviews 0}}{{else}}1{{/if}})</span>
+                    <div class="item-price">
+                        {{getItemPrice prices 'compare'}}
+                    </div>
+                {{/every}}
+            {{else}}
+                {{#every this.items num='8' ds='groups'}}
+                    <a href="{{group.url}}" title="{{group.title}}">
+                        <img src="{{getAttrOfFristArray group.images 'url'}}" alt="{{group.title}}" width="120" height="120"/>
+                        <div class="item-name">{{group.title}}</div>
+                    </a>
+                {{/every}}
+            {{/ifequal}}
+        </div>
+    </div>
+    <div class="wml-cat-indicator {{#ifequal data_structure 'items'}}mt10{{/ifequal}}">
+        {{generateIndicator 8}}
+    </div>
+</script>
+
+
+<script id="hbs_wml_cat_carousel" type="text/x-handlebars-template">
+    {{! carousel }}
+    <div class="wml-cat-head">
+        <h2 class="wml-cat-title">{{title}}
+            {{#if last_updated}}<span class="wml-cat-time">(Updated {{last_updated}} minutes ago)</span>{{/if}}
+        </h2>
+        <div class="wml-cat-pagination">
+            Page <span class="page-current"></span> of <span class="page-total"></span>
+            <!--<span class="page-startover">(<a class="page-startover-link">Start over</a>)</span>-->
+        </div>
+    </div>
+    <div class="wml-cat-inner clearfix">
+        <div class="vpt">
+            <div class="slide-wrap clearfix">
+                {{#ifequal data_structure 'items'}}
+                    {{#every this.items num='4' ds='items'}}
+                        <a class="item-link" href="{{url}}" title="{{title}}">
+                            <img src="{{getAttrOfFristArray images 'url'}}" alt="{{title}}" width="130" height="130"/>
+                            <div class="item-name">{{title}}</div>
+                        </a>
+                        <div class="item-price">{{getItemPrice prices 'single'}}</div>
+                        <div class="item-review"><div class="item-review-inner" style="width:{{getItemRating customer_rating}}"></div></div>
+                        <span class="item-reviewnum">({{#if properties.num_reviews}}{{toFixedNum properties.num_reviews 0}}{{else}}1{{/if}})</span>
+                    {{/every}}
+                {{else}}
+                    {{#every this.items num='4' ds='groups'}}
+                        <a class="item-link" href="{{group.url}}" title="{{group.title}}">
+                            <img src="{{getAttrOfFristArray group.images 'url'}}" alt="{{group.title}}" width="120" height="120"/>
+                            <div class="item-name">{{group.title}}</div>
+                        </a>
+                    {{/every}}
+                {{/ifequal}}
+            </div>
+        </div>
+    </div>
+    <div class="arr-previous"><span class="i-arr"></span></div>
+    <div class="arr-next"><span class="i-arr"></span></div>
+</script>

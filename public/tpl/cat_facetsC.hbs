@@ -1,0 +1,19 @@
+<script id="hbs_cat_facet" type="text/x-handlebars-template">
+    {{! facet }}
+    {{#each this}}
+        <div class="{{#ifequal @index 0}}lnav-cat{{else}}lnav-fac{{/ifequal}}">
+          <h2 class="lnav-h">{{#if display_name}}{{display_name}}{{else}}Category{{/if}}</h2>
+          <ul class="l-v lnav-u {{#if @index}}collapse{{/if}}">
+              {{#each values}}
+                  <li>
+                  {{#ifequal type 'internal'}}
+                      <a href="{{value}}">{{text}}</a>
+                  {{else}}
+                      <a href="http://www.walmart.com/cp/Electronics/{{value}}">{{text}}</a>
+                  {{/ifequal}}
+                  </li>
+              {{/each}}
+          </ul>
+        </div>
+    {{/each}}
+</script>

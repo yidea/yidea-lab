@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<title>Traffic</title>
+	<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+	<section id="app">
+		<header id="header">
+            <h1>App - Area Assitant</h1>
+        </header>
+		<section id="main">
+            <div id="map_canvas" style="height: 600px;"></div>
+            <div id="directionsPanel"></div>
+		</section>
+		<footer id="footer"></footer>
+	</section>
+
+	<script src="js/lib/jquery.js"></script>
+    <!--<script src="js/lib/json2.js"></script>-->
+	<script src="js/lib/lodash.js"></script>
+	<script src="js/lib/backbone.js"></script>
+	<!--<script src="js/lib/backbone-localstorage.js"></script>-->
+    <!--<script src="js/app-handson.js"></script>-->
+
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBQaNngFpDGsRdfzdpM9XGqKyVND6UAZAs&libraries=weather&sensor=true"></script>
+    <script type="text/javascript">
+        /*TODO:
+        weather
+        duration in traffic
+        localstorage save address
+         geolocation of current
+        * */
+
+         /*-------------------------------------------------------------------------
+        @ Google Map
+        Main component: Map, LatLng, Marker, InfoWindow, Layer, Direction
+         https://code.google.com/apis/ajax/playground/#map_simple_v3
+         https://developers.google.com/maps/documentation/javascript/overlays
+        -------------------------------------------------------------------------*/
+        var map;
+        function initialize() {
+            var addressHome = '98 Church St. Mountain view, CA';
+            var addressDest = '3333 Coyote Hill Rd.  Palo Alto, CA 94304';
+
+            var myLatlng = new google.maps.LatLng(37.384981, -122.075132); //sj
+            var geocoder = new google.maps.Geocoder();
+            //direction
+            var directionsDisplay = new google.maps.DirectionsRenderer({draggable: true});
+            var directionsService = new google.maps.DirectionsService();
+            var mapOptions = {
+                zoom: 12,
+                mapTypeId: google.maps.MapTypeId.ROADMAP,
+                center: myLatlng  //TODO:set center
+            };
+            map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
+
+            //@ get direction
+            directionsDisplay.setMap(map);
+            directionsDisplay.setPanel(document.getElementById("directionsPanel")); //direction panel
+
+            var request = {
+                origin:addressHome,
+                destination:addressDest,
+                waypoints:[{location: 'Cuesta Drive, Mountain View, CA', stopover: true}],
+                optimizeWaypoints: true,
+                travelMode: google.maps.TravelMode.DRIVING,
+                //avoidHighways: true,
+                durationInTraffic: true //show duration time value
+            };
+            directionsService.route(request, function(response, status) {
+                if (status == google.maps.DirectionsStatus.OK) {
+                    directionsDisplay.setDirections(response);
+                }
+            });
+
+            //@ traffic layer
+            var trafficLayer = new google.maps.TrafficLayer();
+            trafficLayer.setMap(map);
+
+            //@ weather layer
+            var weatherLayer = new google.maps.weather.WeatherLayer({
+                temperatureUnits: google.maps.weather.TemperatureUnit.CELSIUS, //FAHRENHEIT
+            });
+
+//            var cloudLayer = new google.maps.weather.CloudLayer();
+//            cloudLayer.setMap(map);
+
+            //@ get Geocode async
+            //            var geoHome = getGeoCode(addressHome);
+            //            var geoDest = getGeoCode(addressDest);
+
+            //@ Geocoding address
+            function getGeoCode(strAddress) {
+                geocoder.geocode({'address': strAddress}, function (response, status) {
+                    if(status == google.maps.GeocoderStatus.OK){
+                        console.log(response[0], response[0].geometry.location);
+
+                        //@ marker
+                        var marker = new google.maps.Marker({
+                            map: map,
+                            position: response[0].geometry.location
+                        });
+                        return response[0].geometry.location;
+                    }
+                });
+            }
+
+            /*-------------------------------------------------------------------------
+            @ Control
+             https://developers.google.com/maps/documentation/javascript/controls#ControlOptions
+             http://thewebstorebyg.wordpress.com/2013/01/11/custom-directions-panel-with-google-maps-api-v3/
+             http://www.noupe.com/tools/collection-of-the-coolest-uses-of-the-google-maps-api.html
+             http://planefinder.net/
+            -------------------------------------------------------------------------*/
+            var controlDiv = document.createElement('DIV');
+            $(controlDiv).addClass('gmap-control-container').addClass('gmnoprint');
+            var controlUI = document.createElement('DIV');
+            $(controlUI).addClass('gmap-control').css({'background-color':'#fff','border': '1px solid #ccc', 'cursor':'pointer'});
+            $(controlUI).text('Weather');
+            $(controlDiv).append(controlUI);
+
+            var legend = '<ul>'
+                    + '<li><span style="background-color: #30ac3e">&nbsp;&nbsp;</span><span style="color: #30ac3e"> &gt; 80 km per hour</span></li>'
+                    + '<li><span style="background-color: #ffcf00">&nbsp;&nbsp;</span><span style="color: #ffcf00"> 40 - 80 km per hour</span></li>'
+                    + '<li><span style="background-color: #ff0000">&nbsp;&nbsp;</span><span style="color: #ff0000"> &lt; 40 km per hour</span></li>'
+                    + '<li><span style="background-color: #c0c0c0">&nbsp;&nbsp;</span><span style="color: #c0c0c0"> No data available</span></li>'
+                    + '</ul>';
+
+            var controlLegend = document.createElement('DIV');
+            $(controlLegend).addClass('gmap-control-legend');
+            $(controlLegend).html(legend);
+            $(controlLegend).hide();
+            $(controlDiv).append(controlLegend);
+
+            // Set hover toggle event
+//            $(controlUI).mouseenter(function() {
+//                        $(controlLegend).show();
+//                    }).mouseleave(function() {
+//                        $(controlLegend).hide();
+//                    });
+
+//            var trafficLayer = new google.maps.TrafficLayer();
+            
+//            console.log(map.getZoom());
+
+            google.maps.event.addDomListener(controlUI, 'click', function() {
+                if (typeof weatherLayer.getMap() == 'undefined' || weatherLayer.getMap() === null) { //enable weather layer
+//                    $(controlUI).addClass('gmap-control-active');
+                    weatherLayer.setMap(map);
+                    trafficLayer.setMap(null);
+                    $(controlUI).text('Traffic');
+                    map.setZoom(11);
+                } else { //disable weather, enable traffic
+                    trafficLayer.setMap(map);
+                    weatherLayer.setMap(null);
+                    $(controlUI).text('Weather');
+                    map.setZoom(13);
+                    map.setCenter(myLatlng);
+                }
+            });
+
+            map.controls[google.maps.ControlPosition.TOP_RIGHT].push(controlDiv);
+        }
+
+        initialize();
+
+
+/*-------------------------------------------------------------------------
+@ Gas price api
+ http://www.fuelmyroute.com/get_cheapest_gas_prices
+ autos.msn.com/everyday/GasStations.ashx?SWLat=37.35542188101449&SWLong=-122.11767196655275&NELat=37.420617299955616&NELong=-122.03098297119142&Grade=0
+ http://66.70.86.44/GasBuddy_Google_USA.aspx?up_area1=94041&up_area2=94042&up_area3=94043&up_area4=94044&up_fuel=Regular
+ http://www.mapquest.com/_svc/searchio?action=mapSearch&query=cat%3Agas%20stations&mapSearchArea=(37.39386083963802,-122.09947934912151,54167,1050,406,1.0,1.0)&page=0&gasPrice=regular
+ http://www.sanjosegasprices.com/Map_Gas_Prices.aspx
+-------------------------------------------------------------------------*/
+
+        $.ajax({
+            url: '/api/gasPrice',
+            type:'GET',
+            dataType:'json',
+            success: function (res) {
+                var infowindow = new google.maps.InfoWindow();
+
+                //add marker based on gas station info
+                _.each(res.unresolvedLocations, function (item) {
+                    var regular, regularAmount, marker;
+                    //check data exist, and [2]type = regular; otherwize loop the array to find by type
+                    var len = item.gasPrices.length;
+                    regular = item.gasPrices[len-1];
+
+                    if(regular){
+                        regularAmount = (Math.floor(regular.amount*100)/100).toFixed(2); //tofix 2
+                        marker = new google.maps.Marker({
+                            position: new google.maps.LatLng(item.address.latLng.lat, item.address.latLng.lng),
+                            map: map,
+                            title: 'click for info',
+                            zIndex: google.maps.Marker.MAX_ZINDEX + 1,
+                            optimized: false, //trick to make zIndex work with custom icon marker
+                            icon: 'https://chart.googleapis.com/chart?chst=d_simple_text_icon_below&chld='+ regularAmount + '|14|000000|glyphish_fuel|12|000000|ffffff'
+                            //icon: 'https://chart.googleapis.com/chart?chst=d_bubble_icon_text_small&chld=glyphish_fuel|bb|3.99|f3f6fb|1c2f4b'
+                        });
+
+                        /*-------------------------------------------------------------------------
+                        @ infowindow
+                        - hover with general desc; click with detail: hour, tel
+                        -------------------------------------------------------------------------*/
+                        google.maps.event.addListener( marker, 'click', (function (marker, item) {
+                            return function(){
+                                infowindow.setContent(item.branding);
+                                infowindow.open(map, marker);
+                            }
+                        })(marker, item));
+                    }
+                });
+
+//                for(i=0; i<res.unresolvedLocations.length; i++){
+//                    marker = new google.maps.Marker({
+//                        position: new google.maps.LatLng(37.384992+(i*0.01), -122.085132),
+//                        map: map
+//                    })
+//                }
+            }
+        });
+
+    </script>
+</body>
+</html>

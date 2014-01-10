@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>
+<html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>
+<html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>
+<html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="css/wml_cat.css">
+
+    <script src="js/components/modernizr/modernizr.js"></script>
+</head>
+
+<body style="background: url(img/wml/bg.png) scroll 50% 0 no-repeat; height: 2745px" >
+    <div class="container">
+        <div id="left_nav"></div>
+        <div id="placeholder">
+            <div id='category_modules'></div>
+        </div>
+    </div>
+
+    <script src="js/components/jquery/jquery.js"></script>
+    <!--<script src="js/components/underscore/underscore.js"></script>-->
+    <script src="js/components/handlebars/handlebars.js"></script>
+    <script src="js/components/yepnope/yepnope.js"></script>
+
+    <script src="js/wml/WALMART.polyfill.js"></script>
+
+    <!--util-->
+    <script src="js/wml/WALMART.Util.js"></script>
+
+    <script>Modernizr && Modernizr.touch && document.write('<script src="http://172.28.208.181:35729/livereload.js?snipver=1"><\/script>');</script>
+    <script src="js/lib/jquery.log.js"></script>
+    <!--<script>window.jQuery.log && $.log.config({production: true});</script>-->
+
+    <!--plugin-->
+    <script src="js/wml/handlerbars.cat.helper.js"></script>
+    <script src="js/components/spin.js/spin.js"></script>
+    <script src="js/wml/jquery.spinner.js"></script>
+    <script src="js/wml/jquery.wmlCatModule.js"></script>
+
+    <script>
+        (function ($, window, document, undefined) {
+            $(function () {
+                /* @ Module setup Instructions
+                 * CSS depency: wl-carousel3.css (generate from scss, clearn .container and #placeholder before use)
+                 * JS depency: modernizr-2.6.2, jquery, handlerbars-1.0.0.js, handlerbars.cat.helper.js(template helper), hammer.js(called in jq plugin for aiding touchscreen) , util.js(testing), wmlCatModule.js(jquery plugin is rely on Modernizr and Hammer.js for feature detection, handlebars.js for templating and handlerbars.cat.helper.js)
+                 * HTML handlebars template depency: template/tpl_cat_modules.hbs (handlebars template has 3 type of module)
+                 * Code Changes needed: JS namespace change WALMART.jquery in wmlCatModule.js and handlerbars.cat.helper.js
+                 * */
+
+                var IS_LOCAL_TEST = false;
+
+                yepnope({
+                    test: Modernizr.touch,
+                    yep: {
+                        'yepCb': 'js/components/hammerjs/dist/jquery.hammer.js'
+                    },
+                    callback:{
+                        'yepCb': function (url, result, key) {}
+                    },
+                    complete: function () {
+                        var url = 'http://srch-dev03.sv.walmartlabs.com:9999/preso/category_page?category_id=',
+                                category_id =  WALMART.util.getParameterByName('category_id') || '3944',
+                                preview = WALMART.util.getParameterByName('preview'),
+                                module_id = WALMART.util.getParameterByName('module_id');
+                        var $target = $('#category_modules');
+
+                        url += category_id;
+                        if(module_id){url += '&module_id='+ module_id;}
+                        if(preview && preview ==='on'){url += '&preview=on';}
+
+                        if(IS_LOCAL_TEST){
+                            url = 'json/items7.json'; //todo local test
+                        }
+
+                        var jqxhr = $.ajax({
+                            type:    'GET',
+                            dataType: 'json',
+                            url:     url,
+                            cache: false,
+                            beforeSend: function () {$target.spinner();},
+                            success: function (json) {
+                                $target.spinner('stop');
+
+                                $.log(json.modules); //TODO:debug
+
+                                Handlebars.Templates.load('tpl/cat_modules.hbs', function () {
+                                    //1 setup modules
+                                    if(json.modules && json.modules.length){
+                                        $.each(json.modules, function (index, module) {
+                                            $target.wmlCatModule({
+                                                type:       module.type,
+                                                templateType:   module.template,
+                                                dataSource: module
+                                            });
+                                        });
+                                    } else {
+                                        $target.html('Ooops, nothing found.');
+                                    }
+                                });
+
+
+                                //2 set left_nav update - wait for indian team
+                                var facets = json.left_nav.manual_facets;
+
+//                                if(json['left_nav']['manual_facets'] && json['left_nav']['manual_facets'].length){
+                                if(facets && facets.length){
+                                    Handlebars.Templates.load('tpl/cat_facets.hbs', function () {
+                                        var tplLeftNav = Handlebars.Templates.get('hbs_cat_facet');
+//                                        var facets = json['left_nav']['manual_facets'];
+                                        var $el = $('#left_nav');
+                                        $el.append(tplLeftNav(facets));
+
+                                        //todo: hammer to body? {prevent_default: true}
+                                        if(Modernizr.touch){ $el = $el.hammer();}
+                                        $('.lnav-fac').on(WALMART.event.click, '.lnav-h', function (e) {
+                                            e.preventDefault();
+                                            if(Modernizr.touch){
+                                                e.gesture.preventDefault();
+                                                e.gesture.stopDetect();
+                                            }
+
+                                            var $acHead = $(this),
+                                                    $acBody = $acHead.next('.collapse');
+                                            if(!$acHead.hasClass('close')){//close it
+                                                $acBody.addClass('close');
+                                                if(Modernizr.csstransitions){
+                                                    $acBody.one(WALMART.event.transitionEnd, function (e) {
+                                                        $acHead.addClass('close');
+                                                    });
+                                                } else {
+                                                    $acHead.addClass('close');
+                                                }
+                                            } else{ //open
+                                                $acBody.removeClass('close');
+                                                if(Modernizr.csstransitions){
+                                                    $acBody.one(WALMART.event.transitionEnd, function (e) {
+                                                        $acHead.removeClass('close');
+                                                    });
+                                                } else {
+                                                    $acHead.removeClass('close');
+                                                }
+                                            }
+                                        });
+                                    });
+                                }
+                            }
+                        });
+
+                    }
+                });
+
+            });
+        }(jQuery, window, document));
+    </script>
+</body>
+</html>

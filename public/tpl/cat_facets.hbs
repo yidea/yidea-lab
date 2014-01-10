@@ -1,0 +1,34 @@
+<script id="hbs_cat_facet" type="text/x-handlebars-template">
+    {{! facet }}
+    {{#each this}}
+        <div class="lnav-fac">
+          <h2 class="lnav-h">{{display_name}}</h2>
+          <ul class="l-v lnav-u collapse">
+              {{#each values}}
+                  <li>
+                  {{#ifequal type 'internal'}}
+                      <a href="{{value}}">{{text}}</a>
+                  {{else}}
+                      <a href="http://www.walmart.com/cp/{{value}}">{{text}}</a>
+                  {{/ifequal}}
+                  </li>
+              {{/each}}
+          </ul>
+        </div>
+    {{/each}}
+</script>
+
+
+<script id="hbs_cat_cat" type="text/x-handlebars-template">
+    {{! category }}
+        <div class="lnav-cat">
+            <h2 class="lnav-h">Category</h2>
+            <ul class="l-v lnav-u">
+            {{#each this}}
+                <li>
+                    <a href="http://www.walmart.com/cp/{{value}}">{{text}}</a>
+                </li>
+            {{/each}}
+            </ul>
+        </div>
+</script>

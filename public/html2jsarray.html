@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>
+<html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>
+<html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>
+<html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>FE Tooling</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="js/components/bootstrap/dist/css/bootstrap.css">
+  <link rel="stylesheet" href="css/wml_cat.css">
+  <script src="js/lib/modernizr-2.6.2.js"></script>
+</head>
+
+<body>
+  <div class="container">
+
+    <section>
+      <h2>Html to Javascript Array String Convertor</h2>
+      <p>(Tool was originally build for easing the pain of constructing HTML fixture of Mocha unit testing using html array string from browser html. 11/1/2013)</p>
+
+      <form role="form">
+        <div class="form-group">
+          <textarea class="form-control" id="htmlRaw" name="htmlRaw" cols="60" rows="10" placeholder="Paste HTML here.. (Notice: Auto-clear blank line in HTML)"></textarea>
+        </div>
+        <div class="form-group">
+          <button id="btn_html2str" type="button" class="btn btn-primary btn-sm">Convert to JS Array String</button>
+        </div>
+        <div class="form-group">
+          <textarea class="form-control" id="jsArrayString" name="jsArrayString" cols="60" rows="10" placeholder="Output JS Array String.."></textarea>
+        </div>
+      </form>
+    </section>
+
+  </div>
+
+  <!--lib-->
+  <script src="js/components/jquery/jquery.js"></script>
+  <script src="js/components/underscore/underscore.js"></script>
+  <script src="js/components/backbone/backbone.js"></script>
+  <script src="js/components/handlebars/handlebars.js"></script>
+
+  <script>
+    $(function () {
+
+      /*TODO:
+      * AMD + MVC bb.rocks structure, bower
+      * Deploy to Heroku as a tool service
+      * Feature: better html code/tab, save to localstorage as temp
+      * Buitify UI with bootstrap
+      * Refactor in module with underscore
+      * Options other format?
+      * example: http://accessify.com/tools-and-wizards/developer-tools/html-javascript-convertor/
+      * */
+
+      $("#btn_html2str").on("click", function _convertHTML2Str() {
+        var strHTML = $("#htmlRaw").val();
+        var arrHTML = strHTML.split("\n");
+        var arrTemp = null;
+
+        var i = 0, len = arrHTML.length;
+
+        var arrCleanHTML = [];
+
+        //clean raw html: clear blank line
+        for(i=0; i<len; i++){
+
+          if ((arrHTML[i]).trim().length) {
+            arrCleanHTML.push(arrHTML[i]);
+          }
+        }
+
+        i = 0, len = arrCleanHTML.length;
+        if(len){
+          arrTemp = [];
+          for(i=0; i<len; i++){
+            if(i === 0){
+              arrTemp.push("[");
+              arrTemp.push("\n");
+            }
+            arrTemp.push("\"");
+            arrTemp.push(arrCleanHTML[i].replace(/\"/g, "\\\"").replace(/\//g, "\\/"));
+            arrTemp.push("\"");
+            if (i !== len-1 ) {
+              arrTemp.push(",");
+            } else {
+              arrTemp.push("\n");
+              arrTemp.push("]");
+            }
+            arrTemp.push("\n");
+          }
+
+          $("#jsArrayString").val(arrTemp.join(""));
+        } else {
+          alert("No HTML data found!");
+        }
+      })
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>
+<html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>
+<html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>
+<html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Walmart.com</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="css/wml_cat.css">
+
+    <script src="js/lib/modernizr-2.6.2.js"></script>
+</head>
+
+<body style="background: url(img/wml/bg.png) scroll 50% 0 no-repeat; height: 2745px" >
+    <div class="container">
+        <div id="left_nav"></div>
+        <div id="placeholder">
+            <div id='category_modules'></div>
+        </div>
+    </div>
+
+
+    <!--lib-->
+    <script src="js/components/jquery/jquery.js"></script>
+    <!--[if lte IE 9]><script src="js/lib/jquery.XDomainRequest.js"></script><![endif]-->
+
+    <script src="js/components/underscore/underscore.js"></script>
+    <script src="js/components/backbone/backbone.js"></script>
+    <script src="js/components/handlebars/handlebars.js"></script>
+
+    <script>
+        var WALMART = window.WALMART || {};
+        WALMART.jQuery = WALMART.$ = jQuery.noConflict();
+    </script>
+
+    <script src="js/components/spin.js/spin.js"></script>
+
+    <!--testing use: log-->
+    <!--<script src="js/lib/jquery.log.js"></script>-->
+    <script>
+        var IS_LOCAL_TEST = false,
+            PIPELINE = 'production';
+
+//        window.jQuery.log && $.log.config({production: !IS_LOCAL_TEST});
+    </script>
+    <!--testing use: ipad -->
+    <!--<script>Modernizr && Modernizr.touch && document.write('<script src="http://172.28.208.181:35729/livereload.js?snipver=1"><\/script>');</script>-->
+
+    <!--util-->
+    <script src="js/wml/WALMART.polyfill.js"></script>
+    <script src="js/wml/WALMART.Util.js"></script>
+
+    <!--plugin-->
+    <script src="js/wml/handlerbars.cat.helper.js"></script>
+    <script src="js/wml/jquery.spinner.js"></script>
+
+    <script src="js/wml/jquery.wmlCatModule.js"></script>
+
+    <!--main-->
+    <script src="js/wml/catApp.js"></script>
+
+    <!--GA local-->
+    <!--<script src="js/lib/ga_local.js"></script>-->
+</body>
+</html>

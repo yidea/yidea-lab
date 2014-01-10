@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>
+<html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>
+<html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>
+<html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>FE Tooling</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="js/components/bootstrap/dist/css/bootstrap.css">
+</head>
+
+<body>
+<div class="container">
+  <section>
+    <h2>Preso JSON Util</h2>
+
+    <form role="form">
+      <div class="form-group">
+        <textarea id="json_raw" class="form-control" cols="60" rows="10" placeholder="Paste JSON here.. "></textarea>
+      </div>
+      <div class="form-group">
+        <button id="btn_minify" type="button" class="btn btn-primary btn-sm">Minify</button>
+        <button id="btn_one_click" type="button" class="btn btn-primary btn-sm">1-Click Build Preso URL</button>
+
+        <a id="url_one_click" href="" target="_blank"></a>
+      </div>
+      <div class="form-group">
+        <textarea id="json_minify" class="form-control" cols="60" rows="10"
+                  placeholder="Minified JSON output.."></textarea>
+      </div>
+
+      <div class="form-group">
+        <button id="btn_encode" type="button" class="btn btn-primary btn-sm">Encode URL</button>
+      </div>
+      <div class="form-group">
+        <textarea id="json_encode" class="form-control" cols="60" rows="10"
+                  placeholder="Encoded URL json"></textarea>
+      </div>
+
+      <div class="form-group">
+        <button id="btn_build" type="button" class="btn btn-primary btn-sm">Build Preso URL</button>
+      </div>
+      <div class="form-group">
+        <textarea id="json_build_url" class="form-control" cols="60" rows="10"
+                  placeholder="Encoded URL json"></textarea>
+      </div>
+    </form>
+  </section>
+</div>
+
+<!--lib-->
+<script src="js/components/jquery/jquery.js"></script>
+<script src="js/lib/jquery.log.js"></script>
+<script src="js/components/underscore/underscore.js"></script>
+<script src="js/components/backbone/backbone.js"></script>
+<script src="js/components/handlebars/handlebars.js"></script>
+<script src="js/lib/minify.json.js"></script>
+
+<script>
+  /*TODO:
+   * AMD + MVC bb.rocks structure, bower, tests
+   * log change false in production
+   * Heroku deploy
+   * */
+
+  //Log setup
+  $.logConfig({loggerEnabled: true});
+
+  //Lib
+  var PresoJsonUtil = {
+    //using minify.json.js
+    minifyJSON: function (value) {
+      if (!$.trim(value)) {
+        throw new Error("minifyJSON: value is empty");
+      }
+
+      var jsonMinified = JSON.minify(value);
+      //if already minified
+      if (!jsonMinified) {
+        jsonMinified = value;
+      }
+      return jsonMinified;
+    },
+
+    //http://meyerweb.com/eric/tools/dencoder/
+    encodeURL: function (value) {
+      if (!$.trim(value)) {
+        throw new Error("encodeURL: value is empty");
+      }
+      return encodeURIComponent(value).replace(/'/, "%27").replace(/"/g, "%22");
+    },
+
+    constructURL: function (url, param) {
+      return url + param;
+    }
+  };
+
+  // config
+  var URL_PRESO = "http://preview.vsearcher-newsite.walmartlabs.com/preso/module_engine_category?module_config_json=";
+  var $txtJsonRaw = $("#json_raw"),
+      $txtJsonMinfy = $("#json_minify"),
+      $txtJsonEncode = $("#json_encode"),
+      $txtJsonBuildUrl = $("#json_build_url");
+
+  //events
+  $("#btn_one_click").on("click", function () {
+    var jsonRaw = $txtJsonRaw.val(),
+        jsonMinified,
+        jsonEncoded,
+        urlPresoCategory;
+
+    if (!$.trim(jsonRaw)) {
+      throw new Error("#btn_one_click: value is empty");
+    }
+    //minify
+    jsonMinified = PresoJsonUtil.minifyJSON(jsonRaw);
+
+    //encode URL
+    jsonEncoded = PresoJsonUtil.encodeURL(jsonMinified);
+
+    //construct Preso URL
+    urlPresoCategory = PresoJsonUtil.constructURL(URL_PRESO, jsonEncoded);
+
+    $.log("jsonMinified:", jsonMinified);
+    $.log("urlPresoCategory:", urlPresoCategory);
+
+    $("#url_one_click").prop("href", urlPresoCategory).text("Generated Preso URL");
+  });
+
+  $("#btn_minify").on("click", function () {
+    var jsonRaw = $txtJsonRaw.val(),
+        jsonMinified;
+
+    if ($.trim(jsonRaw)) {
+      jsonMinified = PresoJsonUtil.minifyJSON(jsonRaw);
+      $txtJsonMinfy.val(jsonMinified);
+
+      $.log("jsonRaw:", jsonRaw);
+      $.log("jsonMinified:", jsonMinified);
+    }
+  });
+
+  $("#btn_encode").on("click", function () {
+    var jsonMinified = $txtJsonMinfy.val(),
+        jsonEncoded;
+    if ($.trim(jsonMinified)) {
+      $txtJsonEncode.val(PresoJsonUtil.encodeURL(jsonMinified));
+    }
+  });
+
+  $("#btn_build").on("click", function _buildUrl() {
+    var urlParam = $txtJsonEncode.val(),
+        urlPresoCategory = "";
+
+    if (urlParam) {
+      urlPresoCategory = URL_PRESO + urlParam;
+      $txtJsonBuildUrl.val(urlPresoCategory);
+    }
+  });
+
+</script>
+</body>
+</html>

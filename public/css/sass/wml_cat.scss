@@ -1,0 +1,513 @@
+@import "compass";
+@import "compass/css3/user-interface";
+
+/* var */
+$colWidth: 807px;
+$item_mb: 4px;
+$vptHeight: 220px;
+$itemWidth: 160px;
+$vptWidth: $itemWidth*5;
+$vptWidth: $itemWidth*5;
+$borderColor: #f5f5f5;
+$borderRadius: 4px;
+$indicatorBR: 13px;
+$textColor: #333;
+$textColorLight: #555;
+
+/* mixin */
+@mixin respond-to($media) {
+  @if $media == ipad {
+    @media only screen and (min-device-width: 768px) and (max-device-width: 1024px){@content;}
+  }
+  @else if $media == nexus7 {
+    @media only screen and (max-width : 600px) and (device-width : 800px) {@content;}
+  }
+  @else if $media == retina {
+    @media only screen and (-webkit-min-device-pixel-ratio: 2),(min-resolution: 192dpi){@content;}
+  }
+}
+@mixin shape-circle($width: 10px){
+  width: $width;
+  height: $width;
+  @include border-radius($width);
+}
+
+/* util */
+.l-h,.l-v {
+  list-style: none outside none;
+  margin: 0;
+  padding:0;
+}
+.l-h > li{float: left;}
+.l-h > li > a, .l-v > li > a{display: block;}
+
+.f-l{float: left;}
+.f-r{float: right;}
+
+.d-b{
+  display: block;
+}
+.d-ib{
+  display: inline-block;
+}
+.d-i{
+  display: inline;
+}
+.clearfix {
+  *zoom: 1;
+}
+.clearfix:before, .clearfix:after {
+  display: table;
+  line-height: 0;
+  content: "";
+}
+.clearfix:after {clear: both;}
+.hide{
+  display: none;
+}
+.invisible{
+  visibility: hidden;
+}
+.mt10{margin-top: 10px;}
+.mt20{margin-top: 20px;}
+.mb10{margin-bottom: 10px;}
+.mb20{margin-bottom: 20px;}
+
+.native-scroll{
+  overflow: scroll;
+  -webkit-overflow-scrolling: touch;
+  overflow-scrolling: touch;
+}
+
+/*effect*/
+.collapse { //on height
+  position: relative;
+  overflow: hidden;
+  height: auto;
+  max-height: 400px;
+  @include transition(max-height 0.3s ease-in-out);
+}
+.collapse.close{
+  max-height: 0px;
+}
+
+
+
+/*custom*/
+.container{
+  position: relative;
+  width: 1000px;
+  margin:0 auto;
+  font-size: 12px;
+  //font-family: arial;
+  font-family: 'Open Sans', sans-serif;
+}
+#placeholder{
+  position: relative;
+  top:110px;
+  left:192px;
+  width: $colWidth;
+  background-color: #fff;
+}
+#left_nav{
+  position: absolute;
+  left:0;
+  top:110px;
+  width: 183px;
+}
+img{
+  border: none;
+}
+a{
+  &:link,&:visited{
+    color: #1a75cf;
+    text-decoration: none;
+  }
+  &:hover{
+    color: #f63;
+    text-decoration: underline;
+  }
+}
+
+
+.lnav-h{
+  font-size: 14px;
+  font-family: 'Open Sans', sans-serif;
+  margin: 12px 0 0px;
+}
+.lnav-u{
+  a{
+    line-height: 18px;
+    padding:3px 0 2px;
+
+    &:link,&:visited{
+      color: $textColorLight;
+    }
+    &:hover{
+      color: #f63;
+    }
+  }
+}
+.lnav-cat, .lnav-fac{
+  padding: 0 10px;
+  margin-bottom: 10px;
+}
+.lnav-cat{
+  .lnav-u{
+    padding-left: 10px;
+  }
+}
+.lnav-fac{
+  .lnav-h{
+
+    background: url(../img/wml/btn-collapse2.jpg) no-repeat;
+    background-position: 100% 2px;
+    height: 35px;
+    line-height:32px;
+    cursor: pointer;
+    @include user-select(none);
+
+    //@include respond-to(retina){
+    //  background-size: 25px 60px;
+    //}
+    &.close{
+      background-position: 100% -28px;
+    }
+  }
+}
+
+.wml-cat{
+  position: relative;
+  margin-bottom: 18px;
+  background: url(http://www.walmart.com/i/search/sr-horzBar.png) no-repeat 0% 100%;
+
+  .wml-cat-head{
+    position: relative;
+  }
+  .wml-cat-title{
+    margin:0;
+    padding: 8px 0 0 8px;
+    //height: 27px;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: normal;
+    font-size: 22px;
+    color: $textColor;
+  }
+  .wml-cat-time{
+    font-size:11px;
+    color:#999;
+  }
+  .wml-cat-inner{
+    position: relative;
+    padding: 25px 0 15px;
+    @include border-radius(0 0 $borderRadius $borderRadius);
+  }
+  .vpt{
+    position: relative;
+    width: $vptWidth;
+    height: $vptHeight;
+    overflow: hidden;
+  }
+  .slide {
+    position: relative;
+    display: none;
+    min-height: 318px;
+    @include transition(left 0.45s ease-in-out);
+    //background-color: #fff;
+
+    &.active{
+      display: block;
+      left: 0;
+
+      &.left{
+        left: -100%;
+      }
+      &.right{
+        left: 100%;
+      }
+    }
+
+    &.next, &.prev{
+      position: absolute;
+      top:0;
+      display: block;
+      width: 100%;
+    }
+    &.next{
+      left:100%;
+    }
+    &.prev{
+      left:-100%;
+    }
+    &.next.left, &.prev.right{
+      top:0;
+      left:0;
+    }
+
+    .item{
+      margin-bottom: 16px;
+      width: 200px;
+      text-align: center;
+
+      a{
+        display:block;
+      }
+      .item-name{
+        padding: 0 15px;
+        margin:1px 0;
+      }
+      .item-price{
+        margin-top:1px;
+      }
+    }
+  }
+
+
+
+  .item.itemgp{
+    font-weight: bold;
+    font-size: 13px;
+
+    a:link, a:visited{
+      color: $textColor;
+    }
+    a:hover{
+      color: #f63;
+    }
+    .item-name{
+      height: 17px;
+    }
+  }
+
+  .item-name{
+    margin-top: 7px;
+    padding: 0 4px;
+    height: 35px;
+    overflow: hidden;
+  }
+  .item-price{
+    color: #cc0000;
+    font-size: 14px;
+
+    .item-price-base{
+      color: $textColorLight;
+      font-size: 11px;
+      text-decoration: line-through;
+    }
+  }
+  .item-review, .item-review-inner{
+    display: inline-block;
+    width: 60px;
+    height: 12px;
+    background: url(http://www.walmart.com/i/pcache/rating/v1/star.png) repeat-x 0px 1px;
+  }
+  .item-review-inner{
+    display: block;
+    background-position: 0 -12px;
+  }
+  .item-reviewnum{
+    font-size: 11px;
+    color: $textColorLight;
+  }
+}
+
+
+//grid
+.wml-cat-grid{
+  .vpt{
+    min-height: 352px;
+    width: 100%;
+  }
+  .item-name,.item-group-name{
+    text-align: center;
+    margin:10px 0 20px;
+    height: 16px;
+    overflow: hidden;
+    font-size: 12px;
+  }
+  .wml-cat-indicator{
+    text-align: center;
+    padding-bottom: 30px;
+
+    a{
+      display: inline-block;
+      margin-right: 35px;
+      background-color: #ddd;
+      cursor: pointer;
+      @include box-shadow(inset 0 1px 1px 1px rgba(0, 0, 0, 0.2), inset 0 5px 5px rgba(0, 0, 0, 0.1));
+      @include shape-circle($indicatorBR);
+
+      @include respond-to(ipad){
+        @include shape-circle($indicatorBR*1.8);
+        margin-bottom: 10px;
+      }
+      &.active{
+        position: relative;
+        top:1px;
+        background-color: #fff;
+        //border:1px solid rgba(0, 0, 0, 0.2);
+        border:1px solid rgba(0, 0, 0, 0.3);
+        @include box-shadow(0px 1px 2px #ccc);
+      }
+    }
+  }
+}
+
+
+//carousel
+.wml-cat-carousel{
+  a:hover{
+    text-decoration: none;
+  }
+  .wml-cat-pagination{
+    position: absolute;
+    top:15px;
+    right:8px;
+    font-size: 12px;
+    color:#999;
+
+    .page-startover-link{
+      cursor: pointer;
+    }
+  }
+  .wml-cat-inner{
+    padding: 0px;
+    background-color: #e6e6e6;
+    //@include filter-gradient(#499bea, #207ce5, vertical);
+    @include background-image(linear-gradient(#fff 0%, #e6e6e6 100%));
+    @include border-radius(0);
+  }
+  .slide-wrap{
+    position: absolute;
+    top:28px;
+    @include transition(0ms cubic-bezier(0,0,0,0.25,1));
+  }
+  .slide{
+    display:block;
+    float: left;
+  }
+
+  .wml-cat-nav{
+    position: absolute;
+    left: 0px;
+    top:0px;
+    width: 160px;
+    height: $vptHeight;
+
+    .left-nav-title{
+      font-size: 14px;
+      color:#444;
+      margin: 0;
+    }
+    .l-left-nav{
+      font-size: 12px;
+      margin-left: 0px;
+
+      li{
+        padding-top: 8px;
+      }
+    }
+  }
+
+  .arr-previous, .arr-next{
+    position: absolute;
+    z-index: 2;
+    bottom:0px;
+    height: 350px;
+    width: 30px;
+    cursor: pointer;
+    @include user-select(none);
+    background: url('/img/wml/sprites_cat_discovery.png') 0px 0px no-repeat;
+
+    &.active{
+      display: block;
+      cursor: pointer;
+    }
+    .i-arr{
+      position: relative;
+      display: block;
+      margin-top: 156px;
+      height: 30px;
+      width: 30px;
+      background: url('/img/wml/sprites_cat_discovery.png') 0px -370px no-repeat;
+
+      @include respond-to(ipad){
+        display: none;
+      }
+    }
+  }
+  .arr-previous{
+    left: 0px;
+    .i-arr{
+      left:10px;
+    }
+  }
+  .arr-next .i-arr{
+    background-position: -30px -370px;
+    right: 10px;
+  }
+  .arr-next{
+    right: 0px;
+    background-position: -30px 0;
+  }
+  .vpt{
+    width:751px;
+    margin:0;
+    padding: 0 28px;
+    //background: transparent;
+    height: 355px;
+
+    .item{
+      margin:0 14px 0 0;
+      width: 166px;
+      height: 300px;
+      @include border-radius(5px);
+      background: #fff;
+      @include box-shadow( 0 0 3px rgba(0,0,0,.04), 1px 2px 5px rgba(1,1,1,.3));
+      text-align: left;
+
+      .item-link, .item-price, .item-review{
+        margin: 0 10px;
+      }
+      .item-link{
+        padding: 18px 0 10px;
+        text-align: center;
+      }
+      .item-name{
+        padding:10px 0px 0px;
+        color: $textColor;
+        font-weight: bold;
+        font-size: 13px;
+        text-align: left;
+      }
+      .item-price{
+        margin-top: 0;
+        padding-bottom: 2px;
+      }
+      .item-price-single{
+        position: relative;
+        font-size: 23px;
+        color: $textColor;
+        sup{
+          font-size: 11px;
+        }
+      }
+    }
+  }
+}
+
+//pov
+.wml-cat-pov{
+  @include box-shadow(none);
+  .wml-cat-inner{
+    padding: 0;
+  }
+}
+
+
+//ie8
+.lt-ie9{
+  .wml-cat-indicator{
+    a{}
+  }
+}
