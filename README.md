@@ -16,6 +16,9 @@ Node.js dependency libraries (express)
 * web.js
 Node.js server
 
+* Deploy Heroku
+git push
+
 ## Links
 
 * [Html2JSArray](http://localhost:8090/html2jsarray)
