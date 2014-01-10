@@ -21,6 +21,7 @@ git@heroku.com:yidea-lab.git
 
 ```
 git remote add heroku git@heroku.com:yidea-lab.git
+git remote add github git@github.com:yidea/yidea-lab.git
 git push heroku master
 
 //Ensure 1 dyno running web process
