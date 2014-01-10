@@ -17,7 +17,13 @@ Node.js dependency libraries (express)
 Node.js server
 
 * Deploy Heroku
-git push
+
+```
+git push heroku master
+//Ensure 1 dyno running web process
+heroku ps:scale web=1
+
+```
 
 ## Links
 
