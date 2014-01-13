@@ -1,0 +1,39 @@
+@import "compass";
+@import "compass/css3/user-interface";
+
+/* var */
+$gutter: 10px;
+
+.app-container {
+  margin-bottom: $gutter * 3;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+
+  .app-title {
+    margin: $gutter;
+
+    color: #333;
+    font-size: 18px;
+  }
+  .app-input {
+    padding: $gutter;
+  }
+
+  .app-output {
+    .navbar {
+      margin-bottom: 0;
+    }
+
+    .prettyprint, .alert {
+      margin-bottom: 0;
+
+      border-radius: 0;
+      border-width: 0;
+      border-top-width: 1px;
+
+      .linenums {
+        margin-left: 0;
+      }
+    }
+  }
+}

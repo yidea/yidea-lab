@@ -14,22 +14,71 @@
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="js/components/bootstrap/dist/css/bootstrap.css">
+  <link rel="stylesheet" href="js/lib/google-code-prettify/prettify.css"/>
+  <link rel="stylesheet" href="css/jsonUtil.css">
 </head>
 
 <body>
 <div class="container">
   <section>
-    <h2>Preso JSON Util</h2>
+    <h2>Preso Category Util</h2>
+
+    <!--Preso URL -> JSON-->
+    <div id="app_preso2json" class="app-container">
+      <h3 class="app-title">Preso URL -> JSON</h3>
+      <div class="app-input">
+        <form role="form">
+          <div class="form-group">
+            <textarea id="url_raw" class="form-control" rows="3" placeholder="Paste Preso URL here.. "></textarea>
+          </div>
+          <div class="form-group">
+            <button id="btn_url2preso" type="button" class="btn btn-primary btn-sm">Convert</button>
+          </div>
+        </form>
+      </div>
+      <div class="app-output">
+        <pre class="alert alert-danger hidden"></pre>
+        <div id="output_url2json" class="hidden">
+          <!--<nav class="navbar navbar-default">-->
+            <!--<div class="btn-group btn-group-sm">-->
+              <!--<button class="btn btn-default">Format</button>-->
+              <!--<button class="btn btn-default">Minify</button>-->
+            <!--</div>-->
+          <!--</nav>-->
+          <pre class="prettyprint linenums"></pre>
+        </div>
+      </div>
+    </div>
+
+    <!--JSON -> Preso URL-->
+    <div id="app_json2preso" class="app-container">
+      <h3 class="app-title">JSON -> Preso URL</h3>
+      <div class="app-input">
+        <form role="form">
+          <div class="form-group">
+            <textarea id="json_raw" class="form-control" cols="60" rows="10" placeholder="Paste JSON here.. "></textarea>
+          </div>
+          <div class="form-group">
+            <button id="btn_one_click" type="button" class="btn btn-primary btn-sm">1-Click Build Preso URL</button>
+          </div>
+        </form>
+      </div>
+      <div class="app-output">
+
+      </div>
+    </div>
+
 
     <form role="form">
       <div class="form-group">
-        <textarea id="json_raw" class="form-control" cols="60" rows="10" placeholder="Paste JSON here.. "></textarea>
+        <h3>JSON Encode -> Preso URL</h3>
+        <!--<textarea id="json_raw" class="form-control" cols="60" rows="10" placeholder="Paste JSON here.. "></textarea>-->
       </div>
       <div class="form-group">
         <!--<button id="btn_minify" type="button" class="btn btn-primary btn-sm">Minify</button>-->
-        <button id="btn_one_click" type="button" class="btn btn-primary btn-sm">1-Click Build Preso URL</button>
+        <!--<button id="btn_one_click" type="button" class="btn btn-primary btn-sm">1-Click Build Preso URL</button>-->
       </div>
-      <div><a id="url_one_click" href="" target="_blank"></a></div>
+      <div class="form-group"><a id="url_one_click" href="" target="_blank"></a></div>
 
       <!--<div class="form-group">-->
         <!--<textarea id="json_minify" class="form-control" cols="60" rows="10"-->
@@ -57,116 +106,19 @@
 
 <!--lib-->
 <script src="js/components/jquery/jquery.js"></script>
-<script src="js/lib/jquery.log.js"></script>
 <script src="js/components/underscore/underscore.js"></script>
 <script src="js/components/backbone/backbone.js"></script>
 <script src="js/components/handlebars/handlebars.js"></script>
+<script src="js/lib/google-code-prettify/prettify.js"></script>
+
 <script src="js/lib/minify.json.js"></script>
-
+<script src="js/lib/jsl.parser.js"></script>
+<script src="js/lib/jsl.format.js"></script>
+<script src="js/lib/jquery.log.js"></script>
 <script>
-  /*TODO:
-   * AMD + MVC bb.rocks structure, bower, tests
-   * log change false in production
-   * Heroku deploy
-   * */
-
   //Log setup
   $.logConfig({loggerEnabled: true});
-
-  //Lib
-  var PresoJsonUtil = {
-    //using minify.json.js
-    minifyJSON: function (value) {
-      if (!$.trim(value)) {
-        throw new Error("minifyJSON: value is empty");
-      }
-
-      var jsonMinified = JSON.minify(value);
-      //if already minified
-      if (!jsonMinified) {
-        jsonMinified = value;
-      }
-      return jsonMinified;
-    },
-
-    //http://meyerweb.com/eric/tools/dencoder/
-    encodeURL: function (value) {
-      if (!$.trim(value)) {
-        throw new Error("encodeURL: value is empty");
-      }
-      return encodeURIComponent(value).replace(/'/, "%27").replace(/"/g, "%22");
-    },
-
-    constructURL: function (url, param) {
-      return url + param;
-    }
-  };
-
-  // config
-  var URL_PRESO = "http://preview.vsearcher-newsite.walmartlabs.com/preso/module_engine_category?module_config_json=";
-  var $txtJsonRaw = $("#json_raw"),
-      $txtJsonMinfy = $("#json_minify"),
-      $txtJsonEncode = $("#json_encode"),
-      $txtJsonBuildUrl = $("#json_build_url");
-
-  // events
-  // one-click-build
-  $("#btn_one_click").on("click", function () {
-    var jsonRaw = $txtJsonRaw.val(),
-        jsonMinified,
-        jsonEncoded,
-        urlPresoCategory;
-
-    if (!$.trim(jsonRaw)) {
-      throw new Error("#btn_one_click: value is empty");
-    }
-    //minify
-    jsonMinified = PresoJsonUtil.minifyJSON(jsonRaw);
-
-    //encode URL
-    jsonEncoded = PresoJsonUtil.encodeURL(jsonMinified);
-
-    //construct Preso URL
-    urlPresoCategory = PresoJsonUtil.constructURL(URL_PRESO, jsonEncoded);
-
-    $.log("jsonMinified:", jsonMinified);
-    $.log("urlPresoCategory:", urlPresoCategory);
-
-    $("#url_one_click").prop("href", urlPresoCategory).text("Generated Preso URL");
-  });
-
-
-  $("#btn_minify").on("click", function () {
-    var jsonRaw = $txtJsonRaw.val(),
-        jsonMinified;
-
-    if ($.trim(jsonRaw)) {
-      jsonMinified = PresoJsonUtil.minifyJSON(jsonRaw);
-      $txtJsonMinfy.val(jsonMinified);
-
-      $.log("jsonRaw:", jsonRaw);
-      $.log("jsonMinified:", jsonMinified);
-    }
-  });
-
-  $("#btn_encode").on("click", function () {
-    var jsonMinified = $txtJsonMinfy.val(),
-        jsonEncoded;
-    if ($.trim(jsonMinified)) {
-      $txtJsonEncode.val(PresoJsonUtil.encodeURL(jsonMinified));
-    }
-  });
-
-  $("#btn_build").on("click", function _buildUrl() {
-    var urlParam = $txtJsonEncode.val(),
-        urlPresoCategory = "";
-
-    if (urlParam) {
-      urlPresoCategory = URL_PRESO + urlParam;
-      $txtJsonBuildUrl.val(urlPresoCategory);
-    }
-  });
-
 </script>
+<script src="js/jsonUtil.js"></script>
 </body>
 </html>
