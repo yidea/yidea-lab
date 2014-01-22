@@ -18,7 +18,8 @@ Node.js server
 
 * Deploy Heroku
 Heroku Repo: git@heroku.com:yidea-lab.git
-git push all
+git push heroku master
+or git push all
 
 ```
 git remote add heroku git@heroku.com:yidea-lab.git
