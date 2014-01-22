@@ -10,20 +10,39 @@ $gutter: 10px;
   border-radius: 4px;
 
   .app-title {
-    margin: $gutter;
+    margin: 15px $gutter;
 
     color: #333;
     font-size: 18px;
   }
   .app-input {
     padding: $gutter;
+
+    .form-group {
+      margin-left: 0;
+      margin-right: 0;
+    }
   }
 
   .app-output {
     .navbar {
       margin-bottom: 0;
+      min-height: 0;
+      border-bottom: 0;
+
+      border-radius: 0;
+
+      .navbar-nav a {
+        padding: 5px 10px;
+
+        cursor: pointer;
+      }
     }
 
+    .app-output-textarea {
+      border-radius: 0;
+      border:0;
+    }
     .prettyprint, .alert {
       margin-bottom: 0;
 

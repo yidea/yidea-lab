@@ -11,9 +11,9 @@ javascripts_dir = "js"
 
 # Develop & Debug
 output_style = :expanded
+sass_options = {:sourcemap => true}
 #sass_options = { :debug_info => true}
-#sass_options = {:sourcemap => true}
-line_comments = false
+#line_comments = false
 
 # Production
 #output_style = :compressed

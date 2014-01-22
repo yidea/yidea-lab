@@ -23,40 +23,85 @@
   <section>
     <h2>Preso Category Util</h2>
 
-    <!--Preso URL -> JSON-->
+    <!--App: Preso2json-->
     <div id="app_preso2json" class="app-container">
       <h3 class="app-title">Preso URL -> JSON</h3>
+
       <div class="app-input">
         <form role="form">
           <div class="form-group">
-            <textarea id="url_raw" class="form-control" rows="3" placeholder="Paste Preso URL here.. "></textarea>
+            <textarea id="url_raw" class="form-control" cols="60" rows="7" placeholder="Paste Preso URL here.. "></textarea>
           </div>
           <div class="form-group">
-            <button id="btn_url2preso" type="button" class="btn btn-primary btn-sm">Convert</button>
+            <button id="btn_url2preso" type="button" class="btn btn-primary btn-sm">Process</button>
           </div>
         </form>
       </div>
+
       <div class="app-output">
         <pre class="alert alert-danger hidden"></pre>
-        <div id="output_url2json" class="hidden">
-          <!--<nav class="navbar navbar-default">-->
-            <!--<div class="btn-group btn-group-sm">-->
-              <!--<button class="btn btn-default">Format</button>-->
-              <!--<button class="btn btn-default">Minify</button>-->
-            <!--</div>-->
-          <!--</nav>-->
+
+        <div id="output_url2json" class="">
+          <nav class="navbar navbar-default">
+            <ul class="nav navbar-nav">
+              <li class="active"><a class="raw">Raw</a></li>
+              <li><a class="uglify">Uglify</a></li>
+              <li><a class="beautify">Beautify</a></li>
+            </ul>
+          </nav>
+
+          <div>
+            <textarea class="form-control app-output-textarea" cols="60" rows="7"></textarea>
+          </div>
+
           <pre class="prettyprint linenums"></pre>
         </div>
       </div>
     </div>
 
-    <!--JSON -> Preso URL-->
+
+    <!--App: Preso Preview-->
+    <!--json generator for featuredCategoires-->
+    <div id="app_preso_preview" class="app-container">
+      <h3 class="app-title">Preso Preview</h3>
+      <div class="app-input">
+        <h4>Zone 1 - FeaturedCategories</h4>
+        <form class="form-horizontal" role="form">
+          <div class="form-group">
+            <lable for="zone1_cat_id" class="control-label col-sm-1">CategoryID</lable>
+            <div class="col-sm-2">
+              <input id="zone1_cat_id" class="form-control" type="text" value="1"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-offset-1 col-sm-11">
+              <button id="btn_generate" type="button" class="btn btn-primary btn-sm">Generate</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <textarea id="app_preso_preview_output" class="form-control" cols="60" rows="7" ></textarea>
+          </div>
+          <div class="form-group">
+            <button id="btn_preview" type="button" class="btn btn-primary btn-sm">Preview</button>
+          </div>
+          <div class="form-group">
+            <textarea id="app_preso_preview_url" class="form-control" cols="60" rows="7" ></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="app-output">
+
+      </div>
+    </div>
+
+
+    <!--App: JSON -> Preso URL-->
     <div id="app_json2preso" class="app-container">
       <h3 class="app-title">JSON -> Preso URL</h3>
       <div class="app-input">
         <form role="form">
           <div class="form-group">
-            <textarea id="json_raw" class="form-control" cols="60" rows="10" placeholder="Paste JSON here.. "></textarea>
+            <textarea id="json_raw" class="form-control" cols="60" rows="7" placeholder="Paste JSON here.. "></textarea>
           </div>
           <div class="form-group">
             <button id="btn_one_click" type="button" class="btn btn-primary btn-sm">1-Click Build Preso URL</button>
@@ -64,14 +109,12 @@
         </form>
       </div>
       <div class="app-output">
-
       </div>
     </div>
 
-
     <form role="form">
       <div class="form-group">
-        <h3>JSON Encode -> Preso URL</h3>
+        <!--<h3>JSON Encode -> Preso URL</h3>-->
         <!--<textarea id="json_raw" class="form-control" cols="60" rows="10" placeholder="Paste JSON here.. "></textarea>-->
       </div>
       <div class="form-group">
@@ -104,6 +147,7 @@
   </section>
 </div>
 
+
 <!--lib-->
 <script src="js/components/jquery/jquery.js"></script>
 <script src="js/components/underscore/underscore.js"></script>
@@ -111,7 +155,7 @@
 <script src="js/components/handlebars/handlebars.js"></script>
 <script src="js/lib/google-code-prettify/prettify.js"></script>
 
-<script src="js/lib/minify.json.js"></script>
+<script src="js/lib/json2.js"></script>
 <script src="js/lib/jsl.parser.js"></script>
 <script src="js/lib/jsl.format.js"></script>
 <script src="js/lib/jquery.log.js"></script>

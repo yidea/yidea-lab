@@ -4,19 +4,18 @@
  * Add Copy json code feature
  * */
 
+// Resource
+//http://www.json-generator.com/
+
 // Util
+//https://github.com/arc90/jsonlintdotcom
 var PresoJsonUtil = {
-  minifyJSON: function (value) {
-    //using minify.json.js
-    if (!$.trim(value)) {
+
+  minifyJSON: function (json) {
+    if (!$.trim(json)) {
       throw new Error("minifyJSON: value is empty");
     }
-
-    var jsonMinified = JSON.minify(value);
-    if (!jsonMinified) {
-      jsonMinified = value;
-    }
-    return jsonMinified;
+    return JSON.stringify(JSON.parse(json));
   },
 
   formatJSON: function (json, numSpace) {
@@ -43,27 +42,6 @@ var PresoJsonUtil = {
 
   constructURL: function (url, param) {
     return url + param;
-  },
-
-  getNthPos: function (searchStr, char, pos) {
-    var i,
-      charCount = 0,
-      strArr = searchStr.split(char);
-
-    if (pos === 0) {
-      return 0;
-    }
-
-    for (i = 0; i < pos; i++) {
-      if (i >= strArr.length) {
-        return -1;
-      }
-
-      // +1 because we split out some characters
-      charCount += strArr[i].length + char.length;
-    }
-
-    return charCount;
   }
 };
 
@@ -80,8 +58,21 @@ var $appPreso2json = $("#app_preso2json"),
   $alert = $appPreso2json.find(".alert");
 
 // UI events
-//$txtUrlRaw.val("http://preview.vsearcher-newsite.walmartlabs.com/preso/module_engine_category?module_config_json=%7Bzone%7D"); //error json
+$("#btn_generate").on("click", function () {
+  var catID = $("#zone1_cat_id").val();
 
+  if (catID) {
+    //load json to zone1
+    $.getJSON("/json/featuredCategories.json", function (json) {
+      var zone1 = json;
+      zone1.zones.contentZone1[0].configs.categoryID = catID;
+      $.log(zone1);
+      $("#app_preso_preview_output").val(JSON.stringify(zone1));
+    });
+  }
+});
+
+//$txtUrlRaw.val("http://preview.vsearcher-newsite.walmartlabs.com/preso/module_engine_category?module_config_json=%7Bzone%7D"); //error json
 $txtUrlRaw.val("http://preview.vsearcher-newsite.walmartlabs.com/preso/module_engine_category?module_config_json=%7B%22zone%22%3A1%7D"); //correct json
 
 
@@ -98,19 +89,19 @@ $("#btn_url2preso").on("click", function () {
   //validate json
   try {
     result = jsl.parser.parse(jsonDecoded);
-    $.log("result=", result);
 
     if (result) {
       //success: output json and hide alert
       var jsonFormatted = PresoJsonUtil.formatJSON(jsonDecoded, 2);
       $alert.addClass("hidden");
+
       $output
-        .removeClass("hidden")
-        .find(".prettyprint")
-        .removeClass("prettyprinted")
-        .html(jsonFormatted);
-      prettyPrint();
+        .find(".app-output-textarea")
+        .val(jsonFormatted);
+
+
     }
+
   } catch (parseException) {
     //reformat for better error message
     try {
@@ -128,6 +119,50 @@ $("#btn_url2preso").on("click", function () {
 
   $.log("jsonEncoded=", jsonEncoded);
   $.log("jsonDecoded=", jsonDecoded);
+});
+
+var $txtPreso2json = $output.find(".app-output-textarea");
+
+$appPreso2json.find(".nav").on("click", "a", function () {
+  var $this = $(this),
+    $li = $this.parent(),
+    $lis = $this.closest(".nav").find("li");
+
+  if (!$li.hasClass("active")) {
+    $lis.removeClass("active");
+    $li.addClass("active");
+  }
+});
+
+$appPreso2json.find(".uglify").on("click", function () {
+  var json = $txtPreso2json.val();
+  if (!$.trim(json)) {
+    throw new Error(".uglify: value is empty");
+  }
+  json = PresoJsonUtil.minifyJSON(json);
+  $txtPreso2json.val(json);
+});
+
+$appPreso2json.find(".raw").on("click", function () {
+  var json = $txtPreso2json.val();
+  if (!$.trim(json)) {
+    throw new Error(".raw: value is empty");
+  }
+  json = PresoJsonUtil.formatJSON(json);
+  $txtPreso2json.val(json);
+});
+
+$appPreso2json.find(".beautify").on("click", function () {
+  var json = $txtPreso2json.val();
+  json = PresoJsonUtil.formatJSON(json);
+  $output
+    .removeClass("hidden")
+    .find(".prettyprint")
+    .removeClass("prettyprinted")
+    .html(json)
+    .data("json", json);
+
+  prettyPrint();
 });
 
 
