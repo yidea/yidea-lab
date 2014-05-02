@@ -27,17 +27,18 @@ app.get('/dev', function (req, res) {
 app.get('/leftnav', function (req, res) {
   res.sendfile(__dirname + '/public/category_discovery_leftnav.html');
 });
+
 app.get('/bb', function (req, res) { //bb test
-  res.sendfile(__dirname + '/public/category_discovery_bb.html');
+  res.sendfile(__dirname + '/public/bbb.html');
 });
 
-//app.get('/wines', function(req, res) {
-//    res.send([{name:'wine1'}, {name:'wine2'}]);
-//});
-////http://localhost:8080/wines/1
-//app.get('/wines/:id', function(req, res) {
-//    res.send({id:req.params.id, name: "The Name", description: "description"});
-//});
+app.get('/underscore', function (req, res) { //bb test
+  res.sendfile(__dirname + '/public/underscore.html');
+});
+
+app.get('/nativejs', function (req, res) { //bb test
+  res.sendfile(__dirname + '/public/nativejs.html');
+});
 
 var port = process.env.PORT || 5000;
 app.listen(port, function() {

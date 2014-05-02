@@ -6,10 +6,10 @@
 // Load the application once the DOM is ready, using `jQuery.ready`:
 $(function(){
 
-  // Todo Model
+  // mTodo Model
   // ----------
 
-  // Our basic **Todo** model has `title`, `order`, and `done` attributes.
+  // Our basic **mTodo** model has `title`, `order`, and `done` attributes.
   var Todo = Backbone.Model.extend({
 
     // Default attributes for the todo item.
@@ -28,7 +28,7 @@ $(function(){
 
   });
 
-  // Todo Collection
+  // mTodo Collection
   // ---------------
 
   // The collection of todos is backed by *localStorage* instead of a remote
@@ -66,7 +66,7 @@ $(function(){
   // Create our global collection of **Todos**.
   var Todos = new TodoList;
 
-  // Todo Item View
+  // mTodo Item View
   // --------------
 
   // The DOM element for a todo item...
@@ -88,7 +88,7 @@ $(function(){
     },
 
     // The TodoView listens for changes to its model, re-rendering. Since there's
-    // a one-to-one correspondence between a **Todo** and a **TodoView** in this
+    // a one-to-one correspondence between a **mTodo** and a **TodoView** in this
     // app, we set a direct reference on the model for convenience.
     initialize: function() {
       this.listenTo(this.model, 'change', this.render);
@@ -205,7 +205,7 @@ $(function(){
       Todos.each(this.addOne, this);
     },
 
-    // If you hit return in the main input field, create new **Todo** model,
+    // If you hit return in the main input field, create new **mTodo** model,
     // persisting it to *localStorage*.
     createOnEnter: function(e) {
       if (e.keyCode != 13) return;

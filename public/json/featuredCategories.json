@@ -1,0 +1,48 @@
+{
+  "zones": {
+    "contentZone1": [
+      {
+        "type": "FeaturedCategories",
+        "name": "FeaturedCategories",
+        "module_id": "fe_5",
+        "triggers": [
+          {
+            "zone": "contentZone3",
+            "pageType": "categorypage",
+            "pageId": "133162"
+          }
+        ],
+        "configs": {
+          "categoryID": "5438_133162",
+          "title": "Featured categories in women's apparel",
+          "displayMode": "standard",
+          "boostCategories": [
+            "5438"
+          ],
+          "blacklistCategories": [
+            "5438_133162",
+            "5438"
+          ],
+          "overrideImages": [
+            {
+              "category": "5438_133162",
+              "image": {
+                "alt": "alt text",
+                "height": 274,
+                "src": "http://i5-qa.walmartimages.com/97/d7/81/415ee6be-379a-48b0-85af-8aca93d43795.v1",
+                "title": "title text",
+                "width": 1024,
+                "assetId": "prontoId"
+              }
+            }
+          ]
+        },
+        "schedule": {
+          "priority": 10
+        },
+        "status": "active",
+        "version": 2
+      }
+    ]
+  }
+}

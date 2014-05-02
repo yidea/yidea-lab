@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html class="no-js">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Test</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="css/normalize.css">
+  <script src="js/components/modernizr/modernizr.js"></script>
+</head>
+
+<body>
+  <section id="app">
+    <header id="header">
+      <h4>Testing Preso category service...</h4>
+      <input id="new-todo" autofocus>
+    </header>
+    <section id="main">
+      <input id="toggle-all" type="checkbox">
+      <label for="toggle-all">Mark</label>
+      <ul id="todo-list"></ul>
+    </section>
+    <footer id="footer"></footer>
+  </section>
+
+  <!--templates-->
+  <script id="template-item" type="text/x-handlebars-template">
+    <div class="view">
+      <input type="checkbox"/><label>{{title}}</label>
+      <input type="text" value="{{title}}"/>
+    </div>
+  </script>
+
+  <script id="template-header" type="text/x-handlebars-template">
+    <h4>{{title}}</h4>
+  </script>
+
+  <script src="js/components/jquery/jquery.js"></script>
+  <script src="js/components/underscore/underscore.js"></script>
+  <script src="js/components/backbone/backbone.js"></script>
+  <script src="js/lib/backbone.localStorage.js"></script>
+  <script src="js/components/handlebars/handlebars.js"></script>
+
+  <script src="js/lib/jquery.log.js"></script>
+  <script>
+    $.logConfig({loggerEnabled: true});
+  </script>
+
+  <script src="js/src/models/todo.js"></script>
+  <script src="js/src/collections/todos.js"></script>
+  <script src="js/src/views/todoView.js"></script>
+  <script src="js/src/views/appView.js"></script>
+  <script src="js/src/routers/router.js"></script>
+  <script src="js/src/app_test.js"></script>
+</body>
+</html>

@@ -45,8 +45,60 @@ var PresoJsonUtil = {
   }
 };
 
+// json2form
+//http://www.jsonschema.net/index.html#
+var formSchema = {
+   "schema": {
+     "type": "object",
+     "properties": {
+       "configs": {
+         "type": "object",
+         "properties": {
+           "categoryID": {
+             "type:": "string"
+           },
+           "title": {
+             "type:": "string"
+           },
+           "displayMode": {
+             "type:": "string"
+           },
+           "boostCategories": {
+             "type:": "array"
+           },
+           "blacklistCategories": {
+             "type:": "array"
+           },
+           "overrideImages": {
+             "type:": "array",
+             "items": {
+               "type": "object",
+               "properties": {
+                 "category": {
+                   "type:": "string"
+                 },
+                 "image": {
+                   "type:": "object",
+                   "properties": {
+                     "src": {
+                       "type": "string"
+                     }
+                   }
+                 }
+               }
+             }
+           }
+         }
+       }
+     }
+   }
+};
+
+
+
 // config
-var URL_PRESO = "http://preview.vsearcher-newsite.walmartlabs.com/preso/module_engine_category?module_config_json=";
+var URL_PRESO = "http://vpreso.glb.prod.walmart.com/preso/module_engine_category?categoryId=5427&module_config_json=";
+
 var $txtJsonRaw = $("#json_raw"),
   $txtJsonMinfy = $("#json_minify"),
   $txtJsonEncode = $("#json_encode"),
@@ -73,8 +125,7 @@ $("#btn_generate").on("click", function () {
 });
 
 //$txtUrlRaw.val("http://preview.vsearcher-newsite.walmartlabs.com/preso/module_engine_category?module_config_json=%7Bzone%7D"); //error json
-$txtUrlRaw.val("http://preview.vsearcher-newsite.walmartlabs.com/preso/module_engine_category?module_config_json=%7B%22zone%22%3A1%7D"); //correct json
-
+$txtUrlRaw.val("http://vpreso.glb.prod.walmart.com/preso/module_engine_category?categoryId=5427&module_config_json=%7B%22zone%22%3A1%7D"); //correct json
 
 $("#btn_url2preso").on("click", function () {
   var urlRaw = $txtUrlRaw.val();
@@ -82,8 +133,10 @@ $("#btn_url2preso").on("click", function () {
     throw new Error("#btn_url2preso: value is empty");
   }
 
-  var jsonEncoded = urlRaw.replace(URL_PRESO, ""),
-    jsonDecoded = PresoJsonUtil.decodeURL(jsonEncoded),
+  // get encoded json string
+  var keyword = "module_config_json=";
+  var jsonEncoded = urlRaw.substring(urlRaw.indexOf(keyword) + keyword.length);
+  var jsonDecoded = PresoJsonUtil.decodeURL(jsonEncoded),
     result;
 
   //validate json
@@ -98,8 +151,6 @@ $("#btn_url2preso").on("click", function () {
       $output
         .find(".app-output-textarea")
         .val(jsonFormatted);
-
-
     }
 
   } catch (parseException) {
